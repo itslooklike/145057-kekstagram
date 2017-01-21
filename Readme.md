@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Алексей Масалов](https://up.htmlacademy.ru/javascript/8/user/145057).
-* Наставник: `Неизвестно`.
+* Наставник: [Катя Заикина](https://up.htmlacademy.ru/javascript/8/user/351517).
 
 ---
 
