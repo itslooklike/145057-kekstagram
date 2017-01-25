@@ -1,3 +1,5 @@
+'use strict';
+
 window.onload = function () {
   var uploadOverlay = document.querySelector('.upload-overlay');
   var uploadSelectImage = document.querySelector('#upload-select-image');
@@ -27,9 +29,12 @@ window.onload = function () {
   var uploadFilterHeat = document.querySelector('#upload-filter-heat');
 
   uploadFilterChrome.addEventListener('change', function filterChrome() {
-    console.log(uploadFilterChrome.checked);
-    uploadFilterChrome.checked ? filterImagePreview.classList.add('filter-chrome') : filterImagePreview.classList.remove('filter-chrome');
-    // filterImagePreview.classList.add('filter-chrome');
+    // console.log(uploadFilterChrome.checked);
+    if (uploadFilterChrome.checked) {
+      filterImagePreview.classList.add('filter-chrome');
+    } else {
+      filterImagePreview.classList.remove('filter-chrome');
+    }
   });
 
   uploadFilterSepia.addEventListener('change', function filterSepia() {
@@ -57,22 +62,22 @@ window.onload = function () {
   var step = 25;
 
   function setScale(value) {
-    filterImagePreview.style.transform = 'scale(' + parseInt(value) / 100 + ')';
+    filterImagePreview.style.transform = 'scale(' + parseInt(value, 10) / 100 + ')';
   }
 
   uploadResizeControlsValue.value = currentZoom + '%';
 
   uploadResizeControlsButtonInc.addEventListener('click', function increaseZoom() {
-    var currentValue = parseInt(uploadResizeControlsValue.value);
+    var currentValue = parseInt(uploadResizeControlsValue.value, 10);
 
     uploadResizeControlsValue.value = (currentValue + step > maxZoom ? maxZoom : currentValue + step) + '%';
     setScale(uploadResizeControlsValue.value);
   });
 
   uploadResizeControlsButtonDec.addEventListener('click', function decreaseZoom() {
-    var currentValue = parseInt(uploadResizeControlsValue.value);
+    var currentValue = parseInt(uploadResizeControlsValue.value, 10);
 
     uploadResizeControlsValue.value = (currentValue - step < step ? step : currentValue - step) + '%';
     setScale(uploadResizeControlsValue.value);
-  })
+  });
 };
