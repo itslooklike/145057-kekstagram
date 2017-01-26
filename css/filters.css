@@ -1,11 +1,11 @@
 .upload-filter-label-phobos .upload-filter-preview,
 .filter-phobos {
-  -webkit-filter: blur(10px);
-  filter: blur(10px);
+  -webkit-filter: blur(2px);
+  filter: blur(2px);
 }
 
 .upload-filter-label-heat .upload-filter-preview,
 .filter-heat {
-  -webkit-filter: contrast(0.8);
-  filter: contrast(0.8);
+  -webkit-filter: hue-rotate(50deg);
+  filter: hue-rotate(50deg);
 }
