@@ -1,35 +1,40 @@
 'use strict';
 
 window.onload = function () {
+
+  // Overlay toggle
   var uploadOverlay = document.querySelector('.upload-overlay');
   var uploadSelectImage = document.querySelector('#upload-select-image');
 
-  uploadOverlay.classList.add('invisible');
-  uploadSelectImage.classList.remove('invisible');
+  function toggleUploadForm(isOpening) {
+    if (isOpening) {
+      uploadOverlay.classList.remove('invisible');
+      uploadSelectImage.classList.add('invisible');
+    } else {
+      uploadOverlay.classList.add('invisible');
+      uploadSelectImage.classList.remove('invisible');
+    }
+  }
 
   var uploadFile = document.querySelector('#upload-file');
-
   uploadFile.addEventListener('change', function showUploadOverlay() {
-    uploadOverlay.classList.remove('invisible');
-    uploadSelectImage.classList.add('invisible');
+    toggleUploadForm(true);
   });
 
   var uploadFormCancel = document.querySelector('.upload-form-cancel');
-
   uploadFormCancel.addEventListener('click', function showUploadSelectImage() {
-    uploadOverlay.classList.add('invisible');
-    uploadSelectImage.classList.remove('invisible');
+    uploadSelectImage.reset();
+    toggleUploadForm();
   });
 
+  toggleUploadForm();
+
+  // Filters
   var inputWrap = document.querySelector('.upload-filter-controls');
-  var uploadFilterNone = inputWrap.querySelector('#upload-filter-none');
-  var uploadFilterChrome = inputWrap.querySelector('#upload-filter-chrome');
-  var uploadFilterSepia = inputWrap.querySelector('#upload-filter-sepia');
-  var uploadFilterMarvin = inputWrap.querySelector('#upload-filter-marvin');
-  var uploadFilterPhobos = inputWrap.querySelector('#upload-filter-phobos');
-  var uploadFilterHeat = inputWrap.querySelector('#upload-filter-heat');
+  var filterImagePreview = document.querySelector('.filter-image-preview');
 
   var filterList = [
+    'filter-none',
     'filter-chrome',
     'filter-sepia',
     'filter-marvin',
@@ -37,43 +42,22 @@ window.onload = function () {
     'filter-heat'
   ];
 
-  var filterImagePreview = document.querySelector('.filter-image-preview');
-
   function clearClassList() {
-    filterList.forEach(function classNameRemove(item) {
+    filterList.forEach(function (item) {
       filterImagePreview.classList.remove(item);
     });
   }
 
-  uploadFilterNone.addEventListener('change', function filterNone() {
-    clearClassList();
+  filterList.forEach(function (item) {
+    var filterBtn = inputWrap.querySelector('#upload-' + item);
+
+    filterBtn.addEventListener('change', function filter() {
+      clearClassList();
+      filterImagePreview.classList.add(item);
+    });
   });
 
-  uploadFilterChrome.addEventListener('change', function filterChrome() {
-    clearClassList();
-    filterImagePreview.classList.add('filter-chrome');
-  });
-
-  uploadFilterSepia.addEventListener('change', function filterSepia() {
-    clearClassList();
-    filterImagePreview.classList.add('filter-sepia');
-  });
-
-  uploadFilterMarvin.addEventListener('change', function filterMarvin() {
-    clearClassList();
-    filterImagePreview.classList.add('filter-marvin');
-  });
-
-  uploadFilterPhobos.addEventListener('change', function filterPhobos() {
-    clearClassList();
-    filterImagePreview.classList.add('filter-phobos');
-  });
-
-  uploadFilterHeat.addEventListener('change', function filterHeat() {
-    clearClassList();
-    filterImagePreview.classList.add('filter-heat');
-  });
-
+  // Zoom
   var resizeControlWrap = document.querySelector('.upload-resize-controls');
   var uploadResizeControlsButtonInc = resizeControlWrap.querySelector('.upload-resize-controls-button-inc');
   var uploadResizeControlsButtonDec = resizeControlWrap.querySelector('.upload-resize-controls-button-dec');
