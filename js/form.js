@@ -1,89 +1,123 @@
 'use strict';
 
 window.onload = function () {
+  function initPhotoEditor() {
 
-  // Overlay toggle
-  var uploadOverlay = document.querySelector('.upload-overlay');
-  var uploadSelectImage = document.querySelector('#upload-select-image');
+    var KEY_CODE = {
+      'enter': 13,
+      'escape': 27
+    };
 
-  function toggleUploadForm(isOpening) {
-    if (isOpening) {
-      uploadOverlay.classList.remove('invisible');
-      uploadSelectImage.classList.add('invisible');
-    } else {
-      uploadOverlay.classList.add('invisible');
-      uploadSelectImage.classList.remove('invisible');
+    var FILTER_LIST = [
+      'filter-none',
+      'filter-chrome',
+      'filter-sepia',
+      'filter-marvin',
+      'filter-phobos',
+      'filter-heat'
+    ];
+
+    var picture = document.querySelector('.filter-image-preview');
+
+    function setPictureScale(value) {
+      picture.style.transform = 'scale(' + parseInt(value, 10) / 100 + ')';
     }
-  }
 
-  var uploadFile = document.querySelector('#upload-file');
-  uploadFile.addEventListener('change', function showUploadOverlay() {
-    toggleUploadForm(true);
-  });
+    function clearPictureFilters() {
+      FILTER_LIST.forEach(function (item) {
+        picture.classList.remove(item);
+      });
+    }
 
-  var uploadFormCancel = document.querySelector('.upload-form-cancel');
-  uploadFormCancel.addEventListener('click', function showUploadSelectImage() {
-    uploadSelectImage.reset();
+    function filterChanger(evt) {
+      if (evt.target.name === 'upload-filter') {
+        clearPictureFilters();
+        picture.classList.add('filter-' + evt.target.value);
+      } else if (evt.keyCode === KEY_CODE.enter) {
+        clearPictureFilters();
+        evt.target.control.checked = true;
+        picture.classList.add('filter-' + evt.target.control.value);
+      }
+    }
+
+    var editorWindow = document.querySelector('.upload-overlay');
+    var uploadImageForm = document.querySelector('#upload-select-image');
+
+    function toggleUploadForm() {
+      editorWindow.classList.toggle('invisible');
+      uploadImageForm.classList.toggle('invisible');
+      editorZoomReset();
+    }
+
+    var filtersWrap = document.querySelector('.upload-filter-controls');
+
+    function closePhtotoEditor(evt) {
+      if (evt.keyCode === KEY_CODE.escape || evt.type === 'click') {
+        uploadImageForm.reset();
+        clearPictureFilters();
+        toggleUploadForm();
+        filtersWrap.removeEventListener('click', filterChanger);
+        filtersWrap.removeEventListener('keydown', filterChanger);
+      }
+    }
+
+    function filtersHandlersOn() {
+      filtersWrap.addEventListener('click', filterChanger);
+      filtersWrap.addEventListener('keydown', filterChanger);
+    }
+
+    function openPhotoEditor() {
+      toggleUploadForm();
+      filtersHandlersOn();
+    }
+
+    var zoomValue = document.querySelector('.upload-resize-controls-value');
+
+    function editorZoomReset() {
+      var editorDefaultZoom = 100;
+
+      zoomValue.value = editorDefaultZoom + '%';
+      setPictureScale(editorDefaultZoom);
+    }
+
+    function zoomer() {
+      var maxZoom = 100;
+      var step = 25;
+
+      var controlWrap = document.querySelector('.upload-resize-controls');
+      var inc = controlWrap.querySelector('.upload-resize-controls-button-inc');
+      var dec = controlWrap.querySelector('.upload-resize-controls-button-dec');
+
+      function changeZoom(increase) {
+        var currentValue = parseInt(zoomValue.value, 10);
+
+        if (increase) {
+          zoomValue.value = (currentValue + step > maxZoom ? maxZoom : currentValue + step) + '%';
+        } else {
+          zoomValue.value = (currentValue - step < step ? step : currentValue - step) + '%';
+        }
+
+        setPictureScale(zoomValue.value);
+      }
+
+      var increaseZoom = changeZoom.bind(changeZoom, true);
+      var decreaseZoom = changeZoom.bind(changeZoom, false);
+
+      inc.addEventListener('click', increaseZoom);
+      dec.addEventListener('click', decreaseZoom);
+    }
+
+    var closePhotoEditorBtn = document.querySelector('.upload-form-cancel');
+
+    closePhotoEditorBtn.addEventListener('click', closePhtotoEditor);
+    closePhotoEditorBtn.addEventListener('keydown', closePhtotoEditor);
+
+    var uploadFile = document.querySelector('#upload-file');
+
+    uploadFile.addEventListener('change', openPhotoEditor);
     toggleUploadForm();
-  });
-
-  toggleUploadForm();
-
-  // Filters
-  var inputWrap = document.querySelector('.upload-filter-controls');
-  var filterImagePreview = document.querySelector('.filter-image-preview');
-
-  var filterList = [
-    'filter-none',
-    'filter-chrome',
-    'filter-sepia',
-    'filter-marvin',
-    'filter-phobos',
-    'filter-heat'
-  ];
-
-  function clearClassList() {
-    filterList.forEach(function (item) {
-      filterImagePreview.classList.remove(item);
-    });
+    zoomer();
   }
 
-  filterList.forEach(function (item) {
-    var filterBtn = inputWrap.querySelector('#upload-' + item);
-
-    filterBtn.addEventListener('change', function filter() {
-      clearClassList();
-      filterImagePreview.classList.add(item);
-    });
-  });
-
-  // Zoom
-  var resizeControlWrap = document.querySelector('.upload-resize-controls');
-  var uploadResizeControlsButtonInc = resizeControlWrap.querySelector('.upload-resize-controls-button-inc');
-  var uploadResizeControlsButtonDec = resizeControlWrap.querySelector('.upload-resize-controls-button-dec');
-  var uploadResizeControlsValue = resizeControlWrap.querySelector('.upload-resize-controls-value');
-
-  var currentZoom = 100;
-  var maxZoom = 100;
-  var step = 25;
-
-  function setScale(value) {
-    filterImagePreview.style.transform = 'scale(' + parseInt(value, 10) / 100 + ')';
-  }
-
-  uploadResizeControlsValue.value = currentZoom + '%';
-
-  uploadResizeControlsButtonInc.addEventListener('click', function increaseZoom() {
-    var currentValue = parseInt(uploadResizeControlsValue.value, 10);
-
-    uploadResizeControlsValue.value = (currentValue + step > maxZoom ? maxZoom : currentValue + step) + '%';
-    setScale(uploadResizeControlsValue.value);
-  });
-
-  uploadResizeControlsButtonDec.addEventListener('click', function decreaseZoom() {
-    var currentValue = parseInt(uploadResizeControlsValue.value, 10);
-
-    uploadResizeControlsValue.value = (currentValue - step < step ? step : currentValue - step) + '%';
-    setScale(uploadResizeControlsValue.value);
-  });
+  initPhotoEditor();
 };
