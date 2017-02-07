@@ -1,27 +1,25 @@
 'use strict';
 
-window.createScale = function (inc, dec, zoomValue, step, maxZoom, picture) {
+window.createScale = function (elem, step, maxZoom) {
+  var picture = document.querySelector('.filter-image-preview'); // дубль в initializeFilters
+  var zoomValue = document.querySelector('.upload-resize-controls-value');
   zoomValue.value = maxZoom + '%';
 
   function setPictureScale(value) {
     picture.style.transform = 'scale(' + parseInt(value, 10) / 100 + ')';
   }
 
-  function changeZoom(increase) {
+  function changeZoom() {
     var currentValue = parseInt(zoomValue.value, 10);
 
-    if (increase) {
+    if (step > 0) {
       zoomValue.value = (currentValue + step > maxZoom ? maxZoom : currentValue + step) + '%';
     } else {
-      zoomValue.value = (currentValue - step < step ? step : currentValue - step) + '%';
+      zoomValue.value = (currentValue + step < Math.abs(step) ? Math.abs(step) : currentValue + step) + '%';
     }
 
     setPictureScale(zoomValue.value);
   }
 
-  var increaseZoom = changeZoom.bind(changeZoom, true);
-  var decreaseZoom = changeZoom.bind(changeZoom, false);
-
-  inc.addEventListener('click', increaseZoom);
-  dec.addEventListener('click', decreaseZoom);
+  elem.addEventListener('click', changeZoom);
 };
