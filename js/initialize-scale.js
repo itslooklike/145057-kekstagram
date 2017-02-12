@@ -23,27 +23,33 @@ window.createScale = (function () {
     return parseInt(zoomValue.value, 10);
   }
 
-  function changeZoomHandler(step, maxZoom) {
-    currentValue = pictureZoomValueGet();
+  function changeZoom(step, maxZoom, evt) {
+    if (window.utils.isActivationEvent(evt)) {
+      currentValue = pictureZoomValueGet();
 
-    if (step > 0) {
-      pictureZoomValueSet(currentValue + step > maxZoom ? maxZoom : currentValue + step);
-    } else {
-      pictureZoomValueSet(currentValue + step < Math.abs(step) ? Math.abs(step) : currentValue + step);
+      var decBtn = 'upload-resize-controls-button-dec';
+      var incBtn = 'upload-resize-controls-button-inc';
+
+      if (evt.target.classList.contains(incBtn)) {
+        pictureZoomValueSet(currentValue + step > maxZoom ? maxZoom : currentValue + step);
+      } else if (evt.target.classList.contains(decBtn)) {
+        pictureZoomValueSet(currentValue - step < step ? step : currentValue - step);
+      }
     }
   }
+
+  var changeZoomHandler = null;
 
   return {
     pictureScaleReset: pictureScaleReset,
 
     initScaleListeners: function (elem, step, maxZoom) {
-      elem.addEventListener('click', changeZoomHandler.bind(changeZoomHandler, step, maxZoom)); // при bind как-то можно evt передать?
-      // elem.addEventListener('keydown', changeZoomHandler.bind(changeZoomHandler, step, maxZoom));
+      changeZoomHandler = changeZoom.bind(changeZoom, step, maxZoom);
+      elem.addEventListener('click', changeZoomHandler);
     },
 
     removeScaleListeners: function (elem) {
-      elem.removeEventListener('click', changeZoomHandler); // не удаляются листнеры
-      // elem.removeEventListener('keydown', changeZoomHandler);
+      elem.removeEventListener('click', changeZoomHandler);
     }
   };
 })();

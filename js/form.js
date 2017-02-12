@@ -3,9 +3,8 @@
 window.onload = function () {
   var maxZoom = 100;
   var incStep = 25;
-  var decStep = -incStep;
-  var inc = document.querySelector('.upload-resize-controls-button-inc');
-  var dec = document.querySelector('.upload-resize-controls-button-dec');
+  var scaleControlWrap = document.querySelector('.upload-resize-controls');
+
 
   var editorWindow = document.querySelector('.upload-overlay');
   var uploadImageForm = document.querySelector('#upload-select-image');
@@ -17,8 +16,7 @@ window.onload = function () {
     window.initializeFilters.editorFilterReset();
     window.initializeFilters.initFiltersListeners();
     window.createScale.pictureScaleReset();
-    window.createScale.initScaleListeners(inc, incStep, maxZoom);
-    window.createScale.initScaleListeners(dec, decStep, maxZoom);
+    window.createScale.initScaleListeners(scaleControlWrap, incStep, maxZoom);
     closePhotoEditorBtn.addEventListener('click', closeEditorHandler);
     closePhotoEditorBtn.addEventListener('keydown', closeEditorHandler);
     uploadFile.removeEventListener('change', openEditor);
@@ -30,8 +28,7 @@ window.onload = function () {
   function closeEditor() {
     window.removeEventListener('keydown', globalCloseEditorHandler);
     window.initializeFilters.removeFiltersListeners();
-    window.createScale.removeScaleListeners(inc);
-    window.createScale.removeScaleListeners(dec);
+    window.createScale.removeScaleListeners(scaleControlWrap);
     closePhotoEditorBtn.removeEventListener('click', closeEditorHandler);
     closePhotoEditorBtn.removeEventListener('keydown', closeEditorHandler);
     uploadFile.addEventListener('change', openEditor);
@@ -42,13 +39,13 @@ window.onload = function () {
   }
 
   function closeEditorHandler(evt) {
-    if (window.utils.isActivationEvent) {
+    if (window.utils.isActivationEvent(evt)) {
       closeEditor();
     }
   }
 
   function globalCloseEditorHandler(evt) {
-    if (window.utils.isDeactivationEvent) {
+    if (window.utils.isDeactivationEvent(evt)) {
       closeEditor();
     }
   }
