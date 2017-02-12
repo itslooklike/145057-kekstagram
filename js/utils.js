@@ -1,30 +1,24 @@
 'use strict';
 
-window.utils = function () {
-  var picture = document.querySelector('.filter-image-preview');
-  var zoomValue = document.querySelector('.upload-resize-controls-value');
+window.utils = (function () {
+  var KEY_CODES = {
+    escape: 27,
+    enter: 13
+  };
+
+  var isKeyboardEvent = function (evt) {
+    return typeof evt.keyCode !== 'undefined';
+  };
 
   return {
-    'KEY_CODE': {
-      'enter': 13,
-      'escape': 27
+    KEY_CODES: KEY_CODES,
+
+    isDeactivationEvent: function (evt) {
+      return isKeyboardEvent(evt) && evt.keyCode === KEY_CODES.escape;
     },
-    'editorFilterReset': function () {
-      picture.classList.remove(window.appState.currentFilter);
+
+    isActivationEvent: function (evt) {
+      return isKeyboardEvent(evt) && evt.keyCode === KEY_CODES.enter || evt.type === 'click';
     },
-    'editorFilterChanger': function (newFilter) {
-      this.editorFilterReset();
-      picture.classList.add(window.appState.currentFilter = newFilter);
-    },
-    'pictureScaleSet': function (scale) {
-      picture.style.transform = 'scale(' + parseInt(scale, 10) / 100 + ')';
-    },
-    'pictureZoomValueSet': function (zoom) {
-      zoomValue.value = zoom + '%';
-      this.pictureScaleSet(zoom);
-    },
-    'pictureZoomValueGet': function () {
-      return parseInt(zoomValue.value, 10);
-    }
   };
-};
+})();

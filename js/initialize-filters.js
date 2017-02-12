@@ -1,21 +1,44 @@
 'use strict';
 
-window.initializeFilters = function (element) {
-  var utils = window.utils();
+window.initializeFilters = (function () {
+  var currentFilter = null;
 
-  function filterChanger(evt) {
+  var picture = document.querySelector('.filter-image-preview');
+  var filtersWrap = document.querySelector('.upload-filter-controls');
+
+  function editorFilterReset() {
+    picture.classList.remove(currentFilter);
+  }
+
+  function editorFilterChanger(newFilter) {
+    editorFilterReset();
+    picture.classList.add(currentFilter = newFilter);
+  }
+
+  function filterChangerHandler(evt) {
     var filterName = null;
 
     if (evt.target.name === 'upload-filter') {
       filterName = 'filter-' + evt.target.value;
-      utils.editorFilterChanger(filterName);
-    } else if (evt.keyCode === utils.KEY_CODE.enter) {
+      editorFilterChanger(filterName);
+    } else if (evt.keyCode === window.utils.KEY_CODES.enter) {
       filterName = 'filter-' + evt.target.control.value;
       evt.target.control.checked = true;
-      utils.editorFilterChanger(filterName);
+      editorFilterChanger(filterName);
     }
   }
 
-  element.addEventListener('click', filterChanger);
-  element.addEventListener('keydown', filterChanger);
-};
+  return {
+    editorFilterReset: editorFilterReset,
+
+    initFiltersListeners: function () {
+      filtersWrap.addEventListener('click', filterChangerHandler);
+      filtersWrap.addEventListener('keydown', filterChangerHandler);
+    },
+
+    removeFiltersListeners: function () {
+      filtersWrap.removeEventListener('click', filterChangerHandler);
+      filtersWrap.removeEventListener('keydown', filterChangerHandler);
+    }
+  };
+})();
