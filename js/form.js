@@ -5,7 +5,6 @@ window.onload = function () {
   var incStep = 25;
   var scaleControlWrap = document.querySelector('.upload-resize-controls');
 
-
   var editorWindow = document.querySelector('.upload-overlay');
   var uploadImageForm = document.querySelector('#upload-select-image');
   var uploadFile = document.querySelector('#upload-file');
