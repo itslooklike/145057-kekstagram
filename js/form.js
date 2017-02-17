@@ -4,6 +4,7 @@ window.onload = function () {
 
   var scaleControlWrap = document.querySelector('.upload-resize-controls');
   var picture = document.querySelector('.filter-image-preview');
+  var filtersWrap = document.querySelector('.upload-filter-controls');
 
   var editorWindow = document.querySelector('.upload-overlay');
   var uploadImageForm = document.querySelector('#upload-select-image');
@@ -14,10 +15,14 @@ window.onload = function () {
     picture.style.transform = 'scale(' + parseInt(scale, 10) / 100 + ')';
   };
 
+  var applyFilter = function (oldFilter, newFilter) {
+    picture.classList.remove(oldFilter);
+    picture.classList.add(newFilter);
+  };
+
   function openEditor() {
     window.addEventListener('keydown', globalCloseEditorHandler);
-    window.initializeFilters.editorFilterReset();
-    window.initializeFilters.initFiltersListeners();
+    window.initializeFilters.initializeFilters(filtersWrap, applyFilter);
     window.createScale.initializeScale(scaleControlWrap, pictureScaleSet);
     closePhotoEditorBtn.addEventListener('click', closeEditorHandler);
     closePhotoEditorBtn.addEventListener('keydown', closeEditorHandler);
@@ -29,7 +34,7 @@ window.onload = function () {
 
   function closeEditor() {
     window.removeEventListener('keydown', globalCloseEditorHandler);
-    window.initializeFilters.removeFiltersListeners();
+    window.initializeFilters.removeFiltersListeners(filtersWrap);
     window.createScale.removeScaleListeners(scaleControlWrap);
     closePhotoEditorBtn.removeEventListener('click', closeEditorHandler);
     closePhotoEditorBtn.removeEventListener('keydown', closeEditorHandler);

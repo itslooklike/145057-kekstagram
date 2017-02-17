@@ -3,42 +3,38 @@
 window.initializeFilters = (function () {
   var currentFilter = null;
 
-  var picture = document.querySelector('.filter-image-preview');
-  var filtersWrap = document.querySelector('.upload-filter-controls');
-
-  function editorFilterReset() {
-    picture.classList.remove(currentFilter);
-  }
-
-  function editorFilterChanger(newFilter) {
-    editorFilterReset();
-    picture.classList.add(currentFilter = newFilter);
-  }
-
-  function filterChangerHandler(evt) {
-    var filterName = null;
-
-    if (evt.target.name === 'upload-filter') {
-      filterName = 'filter-' + evt.target.value;
-      editorFilterChanger(filterName);
-    } else if (evt.keyCode === window.utils.KEY_CODES.enter) {
-      filterName = 'filter-' + evt.target.control.value;
-      evt.target.control.checked = true;
-      editorFilterChanger(filterName);
+  function editorFilterChanger(cb, newFilter) {
+    if (typeof cb === 'function') {
+      cb(currentFilter, currentFilter = newFilter);
     }
   }
 
-  return {
-    editorFilterReset: editorFilterReset,
+  function filterChanger(cb, evt) {
+    var newFilter = null;
 
-    initFiltersListeners: function () {
-      filtersWrap.addEventListener('click', filterChangerHandler);
-      filtersWrap.addEventListener('keydown', filterChangerHandler);
+    if (evt.target.name === 'upload-filter') {
+      newFilter = 'filter-' + evt.target.value;
+      editorFilterChanger(cb, newFilter);
+    } else if (evt.keyCode === window.utils.KEY_CODES.enter) {
+      newFilter = 'filter-' + evt.target.control.value;
+      evt.target.control.checked = true;
+      editorFilterChanger(cb, newFilter);
+    }
+  }
+
+  var filterChangerHandler = null;
+
+  return {
+    initializeFilters: function (wrap, cb) {
+      editorFilterChanger(cb);
+      filterChangerHandler = filterChanger.bind(filterChanger, cb);
+      wrap.addEventListener('click', filterChangerHandler);
+      wrap.addEventListener('keydown', filterChangerHandler);
     },
 
-    removeFiltersListeners: function () {
-      filtersWrap.removeEventListener('click', filterChangerHandler);
-      filtersWrap.removeEventListener('keydown', filterChangerHandler);
+    removeFiltersListeners: function (wrap) {
+      wrap.removeEventListener('click', filterChangerHandler);
+      wrap.removeEventListener('keydown', filterChangerHandler);
     }
   };
 })();
