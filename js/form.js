@@ -1,21 +1,24 @@
 'use strict';
 
 window.onload = function () {
-  var maxZoom = 100;
-  var incStep = 25;
+
   var scaleControlWrap = document.querySelector('.upload-resize-controls');
+  var picture = document.querySelector('.filter-image-preview');
 
   var editorWindow = document.querySelector('.upload-overlay');
   var uploadImageForm = document.querySelector('#upload-select-image');
   var uploadFile = document.querySelector('#upload-file');
   var closePhotoEditorBtn = document.querySelector('.upload-form-cancel');
 
+  var pictureScaleSet = function (scale) {
+    picture.style.transform = 'scale(' + parseInt(scale, 10) / 100 + ')';
+  };
+
   function openEditor() {
     window.addEventListener('keydown', globalCloseEditorHandler);
     window.initializeFilters.editorFilterReset();
     window.initializeFilters.initFiltersListeners();
-    window.createScale.pictureScaleReset();
-    window.createScale.initScaleListeners(scaleControlWrap, incStep, maxZoom);
+    window.createScale.initializeScale(scaleControlWrap, pictureScaleSet);
     closePhotoEditorBtn.addEventListener('click', closeEditorHandler);
     closePhotoEditorBtn.addEventListener('keydown', closeEditorHandler);
     uploadFile.removeEventListener('change', openEditor);

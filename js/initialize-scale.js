@@ -1,50 +1,45 @@
 'use strict';
 
 window.createScale = (function () {
-  var zoomValue = document.querySelector('.upload-resize-controls-value');
-  var picture = document.querySelector('.filter-image-preview');
-  var defaultZoom = 100;
-  var currentValue = null;
+  var maxZoom = 100;
+  var step = 25;
+  var currentZoomValue = null;
+  var callback = null;
 
-  function pictureScaleSet(scale) {
-    picture.style.transform = 'scale(' + parseInt(scale, 10) / 100 + ')';
+  function pictureScaleSet(elem) {
+    currentZoomValue = currentZoomValue ? currentZoomValue : maxZoom;
+
+    if (callback) {
+      callback(currentZoomValue);
+    }
+
+    elem.querySelector('input').value = currentZoomValue + '%';
   }
 
-  function pictureZoomValueSet(zoom) {
-    zoomValue.value = zoom + '%';
-    pictureScaleSet(zoom);
-  }
-
-  function pictureScaleReset() {
-    pictureZoomValueSet(defaultZoom);
-  }
-
-  function pictureZoomValueGet() {
-    return parseInt(zoomValue.value, 10);
-  }
-
-  function changeZoom(step, maxZoom, evt) {
+  function changeZoom(elem, evt) {
     if (window.utils.isActivationEvent(evt)) {
-      currentValue = pictureZoomValueGet();
-
       var decBtn = 'upload-resize-controls-button-dec';
       var incBtn = 'upload-resize-controls-button-inc';
 
       if (evt.target.classList.contains(incBtn)) {
-        pictureZoomValueSet(currentValue + step > maxZoom ? maxZoom : currentValue + step);
+        currentZoomValue = currentZoomValue + step > maxZoom ? maxZoom : currentZoomValue + step;
       } else if (evt.target.classList.contains(decBtn)) {
-        pictureZoomValueSet(currentValue - step < step ? step : currentValue - step);
+        currentZoomValue = currentZoomValue - step < step ? step : currentZoomValue - step;
       }
+
+      pictureScaleSet(elem);
     }
   }
 
   var changeZoomHandler = null;
 
   return {
-    pictureScaleReset: pictureScaleReset,
-
-    initScaleListeners: function (elem, step, maxZoom) {
-      changeZoomHandler = changeZoom.bind(changeZoom, step, maxZoom);
+    initializeScale: function (elem, cb) {
+      if (typeof cb === 'function') {
+        callback = cb;
+      }
+      pictureScaleSet(elem);
+      changeZoomHandler = changeZoom.bind(changeZoom, elem);
       elem.addEventListener('click', changeZoomHandler);
     },
 
