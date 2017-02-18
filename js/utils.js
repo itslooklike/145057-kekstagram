@@ -6,6 +6,10 @@ window.utils = {
     enter: 13
   },
 
+  getRandomElement: function (arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  },
+
   isDeactivationEvent: function (evt) {
     return evt.keyCode === this.KEY_CODES.escape;
   },
