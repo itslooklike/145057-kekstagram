@@ -23,8 +23,10 @@ window.onload = function () {
   var scale = window.initializeScale(scaleControlWrap, pictureScaleSet);
   var filters = window.initializeFilters(filtersWrap, applyFilter);
 
+  var globalClose = window.utils.globalCloser.bind(window.utils.globalCloser, closeEditor);
+
   function openEditor() {
-    window.addEventListener('keydown', globalCloseEditorHandler);
+    window.addEventListener('keydown', globalClose);
     filters.subscribe();
     scale.subscribe();
     closePhotoEditorBtn.addEventListener('click', closeEditorHandler);
@@ -35,7 +37,7 @@ window.onload = function () {
   }
 
   function closeEditor() {
-    window.removeEventListener('keydown', globalCloseEditorHandler);
+    window.removeEventListener('keydown', globalClose);
     filters.unsubscribe();
     scale.unsubscribe();
     closePhotoEditorBtn.removeEventListener('click', closeEditorHandler);
@@ -49,12 +51,6 @@ window.onload = function () {
 
   function closeEditorHandler(evt) {
     if (window.utils.isActivationEvent(evt)) {
-      closeEditor();
-    }
-  }
-
-  function globalCloseEditorHandler(evt) {
-    if (window.utils.isDeactivationEvent(evt)) {
       closeEditor();
     }
   }
