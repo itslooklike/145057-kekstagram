@@ -1,50 +1,49 @@
 'use strict';
 
-window.createScale = function () {
+window.initializeScale = (function () {
   var maxZoom = 100;
   var step = 25;
-  var currentZoomValue = null;
-  var callback = null;
 
-  function pictureScaleSet(elem) {
-    currentZoomValue = currentZoomValue ? currentZoomValue : maxZoom;
-
-    if (callback) {
-      callback(currentZoomValue);
-    }
-
-    elem.querySelector('input').value = currentZoomValue + '%';
+  function removeListeners(elem, listener) {
+    elem.removeEventListener('click', listener);
   }
 
-  function changeZoom(elem, evt) {
-    if (window.utils.isActivationEvent(evt)) {
-      var decBtn = 'upload-resize-controls-button-dec';
-      var incBtn = 'upload-resize-controls-button-inc';
-
-      if (evt.target.classList.contains(incBtn)) {
-        currentZoomValue = currentZoomValue + step > maxZoom ? maxZoom : currentZoomValue + step;
-      } else if (evt.target.classList.contains(decBtn)) {
-        currentZoomValue = currentZoomValue - step < step ? step : currentZoomValue - step;
-      }
-
-      pictureScaleSet(elem);
-    }
+  function addListeners(elem, pictureScaleSet, listener) {
+    pictureScaleSet();
+    elem.addEventListener('click', listener);
   }
 
-  var changeZoomHandler = null;
+  return function (elem, callback) {
+    var currentZoomValue = null;
 
-  return {
-    initializeScale: function (elem, cb) {
-      if (typeof cb === 'function') {
-        callback = cb;
+    function pictureScaleSet() {
+      currentZoomValue = currentZoomValue ? currentZoomValue : maxZoom;
+
+      if (typeof callback === 'function') {
+        callback(currentZoomValue);
       }
-      pictureScaleSet(elem);
-      changeZoomHandler = changeZoom.bind(changeZoom, elem);
-      elem.addEventListener('click', changeZoomHandler);
-    },
 
-    removeScaleListeners: function (elem) {
-      elem.removeEventListener('click', changeZoomHandler);
+      elem.querySelector('input').value = currentZoomValue + '%';
     }
+
+    function changeZoom(evt) {
+      if (window.utils.isActivationEvent(evt)) {
+        var decBtn = 'upload-resize-controls-button-dec';
+        var incBtn = 'upload-resize-controls-button-inc';
+
+        if (evt.target.classList.contains(incBtn)) {
+          currentZoomValue = currentZoomValue + step > maxZoom ? maxZoom : currentZoomValue + step;
+        } else if (evt.target.classList.contains(decBtn)) {
+          currentZoomValue = currentZoomValue - step < step ? step : currentZoomValue - step;
+        }
+
+        pictureScaleSet();
+      }
+    }
+
+    return {
+      unsubscribe: removeListeners.bind(removeListeners, elem, changeZoom),
+      subscribe: addListeners.bind(addListeners, elem, pictureScaleSet, changeZoom)
+    };
   };
-};
+})();

@@ -20,25 +20,24 @@ window.onload = function () {
     picture.classList.add(newFilter);
   };
 
-  var scale = window.createScale();
-  var filters = window.initializeFilters();
+  var scale = window.initializeScale(scaleControlWrap, pictureScaleSet);
+  var filters = window.initializeFilters(filtersWrap, applyFilter);
 
   function openEditor() {
     window.addEventListener('keydown', globalCloseEditorHandler);
-    filters.initializeFilters(filtersWrap, applyFilter);
-    scale.initializeScale(scaleControlWrap, pictureScaleSet);
+    filters.subscribe();
+    scale.subscribe();
     closePhotoEditorBtn.addEventListener('click', closeEditorHandler);
     closePhotoEditorBtn.addEventListener('keydown', closeEditorHandler);
     uploadFile.removeEventListener('change', openEditor);
-
     editorWindow.classList.remove('invisible');
     uploadImageForm.classList.add('invisible');
   }
 
   function closeEditor() {
     window.removeEventListener('keydown', globalCloseEditorHandler);
-    filters.removeFiltersListeners(filtersWrap);
-    scale.removeScaleListeners(scaleControlWrap);
+    filters.unsubscribe();
+    scale.unsubscribe();
     closePhotoEditorBtn.removeEventListener('click', closeEditorHandler);
     closePhotoEditorBtn.removeEventListener('keydown', closeEditorHandler);
     uploadFile.addEventListener('change', openEditor);
