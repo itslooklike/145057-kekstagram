@@ -1,55 +1,49 @@
 'use strict';
 
-window.createScale = (function () {
-  var zoomValue = document.querySelector('.upload-resize-controls-value');
-  var picture = document.querySelector('.filter-image-preview');
-  var defaultZoom = 100;
-  var currentValue = null;
+window.initializeScale = (function () {
+  var maxZoom = 100;
+  var step = 25;
 
-  function pictureScaleSet(scale) {
-    picture.style.transform = 'scale(' + parseInt(scale, 10) / 100 + ')';
+  function removeListeners(elem, listener) {
+    elem.removeEventListener('click', listener);
   }
 
-  function pictureZoomValueSet(zoom) {
-    zoomValue.value = zoom + '%';
-    pictureScaleSet(zoom);
+  function addListeners(elem, pictureScaleSet, listener) {
+    pictureScaleSet();
+    elem.addEventListener('click', listener);
   }
 
-  function pictureScaleReset() {
-    pictureZoomValueSet(defaultZoom);
-  }
+  return function (elem, callback) {
+    var currentZoomValue = null;
 
-  function pictureZoomValueGet() {
-    return parseInt(zoomValue.value, 10);
-  }
+    function pictureScaleSet() {
+      currentZoomValue = currentZoomValue ? currentZoomValue : maxZoom;
 
-  function changeZoom(step, maxZoom, evt) {
-    if (window.utils.isActivationEvent(evt)) {
-      currentValue = pictureZoomValueGet();
+      if (typeof callback === 'function') {
+        callback(currentZoomValue);
+      }
 
-      var decBtn = 'upload-resize-controls-button-dec';
-      var incBtn = 'upload-resize-controls-button-inc';
+      elem.querySelector('input').value = currentZoomValue + '%';
+    }
 
-      if (evt.target.classList.contains(incBtn)) {
-        pictureZoomValueSet(currentValue + step > maxZoom ? maxZoom : currentValue + step);
-      } else if (evt.target.classList.contains(decBtn)) {
-        pictureZoomValueSet(currentValue - step < step ? step : currentValue - step);
+    function changeZoom(evt) {
+      if (window.utils.isActivationEvent(evt)) {
+        var decBtn = 'upload-resize-controls-button-dec';
+        var incBtn = 'upload-resize-controls-button-inc';
+
+        if (evt.target.classList.contains(incBtn)) {
+          currentZoomValue = currentZoomValue + step > maxZoom ? maxZoom : currentZoomValue + step;
+        } else if (evt.target.classList.contains(decBtn)) {
+          currentZoomValue = currentZoomValue - step < step ? step : currentZoomValue - step;
+        }
+
+        pictureScaleSet();
       }
     }
-  }
 
-  var changeZoomHandler = null;
-
-  return {
-    pictureScaleReset: pictureScaleReset,
-
-    initScaleListeners: function (elem, step, maxZoom) {
-      changeZoomHandler = changeZoom.bind(changeZoom, step, maxZoom);
-      elem.addEventListener('click', changeZoomHandler);
-    },
-
-    removeScaleListeners: function (elem) {
-      elem.removeEventListener('click', changeZoomHandler);
-    }
+    return {
+      unsubscribe: removeListeners.bind(removeListeners, elem, changeZoom),
+      subscribe: addListeners.bind(addListeners, elem, pictureScaleSet, changeZoom)
+    };
   };
 })();

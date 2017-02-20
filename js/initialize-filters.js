@@ -1,44 +1,41 @@
 'use strict';
 
 window.initializeFilters = (function () {
-  var currentFilter = null;
-
-  var picture = document.querySelector('.filter-image-preview');
-  var filtersWrap = document.querySelector('.upload-filter-controls');
-
-  function editorFilterReset() {
-    picture.classList.remove(currentFilter);
+  function removeListeners(elem, listener) {
+    elem.removeEventListener('click', listener);
+    elem.removeEventListener('keydown', listener);
   }
 
-  function editorFilterChanger(newFilter) {
-    editorFilterReset();
-    picture.classList.add(currentFilter = newFilter);
+  function addListeners(elem, listener) {
+    elem.addEventListener('click', listener);
+    elem.addEventListener('keydown', listener);
   }
 
-  function filterChangerHandler(evt) {
-    var filterName = null;
+  return function (elem, callback) {
+    var currentFilter = null;
 
-    if (evt.target.name === 'upload-filter') {
-      filterName = 'filter-' + evt.target.value;
-      editorFilterChanger(filterName);
-    } else if (evt.keyCode === window.utils.KEY_CODES.enter) {
-      filterName = 'filter-' + evt.target.control.value;
-      evt.target.control.checked = true;
-      editorFilterChanger(filterName);
+    function filterChanger(evt) {
+      var newFilter = null;
+
+      if (evt.target.name === 'upload-filter') {
+        newFilter = 'filter-' + evt.target.value;
+        editorFilterChanger(newFilter);
+      } else if (evt.keyCode === window.utils.KEY_CODES.enter) {
+        newFilter = 'filter-' + evt.target.control.value;
+        evt.target.control.checked = true;
+        editorFilterChanger(newFilter);
+      }
     }
-  }
 
-  return {
-    editorFilterReset: editorFilterReset,
-
-    initFiltersListeners: function () {
-      filtersWrap.addEventListener('click', filterChangerHandler);
-      filtersWrap.addEventListener('keydown', filterChangerHandler);
-    },
-
-    removeFiltersListeners: function () {
-      filtersWrap.removeEventListener('click', filterChangerHandler);
-      filtersWrap.removeEventListener('keydown', filterChangerHandler);
+    function editorFilterChanger(newFilter) {
+      if (typeof callback === 'function') {
+        callback(currentFilter, currentFilter = newFilter);
+      }
     }
+
+    return {
+      unsubscribe: removeListeners.bind(removeListeners, elem, filterChanger),
+      subscribe: addListeners.bind(addListeners, elem, filterChanger)
+    };
   };
 })();
