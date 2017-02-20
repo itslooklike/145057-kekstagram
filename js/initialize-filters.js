@@ -1,6 +1,6 @@
 'use strict';
 
-window.initializeFilters = (function () {
+window.initializeFilters = function () {
   var currentFilter = null;
 
   function editorFilterChanger(cb, newFilter) {
@@ -37,4 +37,4 @@ window.initializeFilters = (function () {
       wrap.removeEventListener('keydown', filterChangerHandler);
     }
   };
-})();
+};

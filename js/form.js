@@ -20,10 +20,13 @@ window.onload = function () {
     picture.classList.add(newFilter);
   };
 
+  var scale = window.createScale();
+  var filters = window.initializeFilters();
+
   function openEditor() {
     window.addEventListener('keydown', globalCloseEditorHandler);
-    window.initializeFilters.initializeFilters(filtersWrap, applyFilter);
-    window.createScale.initializeScale(scaleControlWrap, pictureScaleSet);
+    filters.initializeFilters(filtersWrap, applyFilter);
+    scale.initializeScale(scaleControlWrap, pictureScaleSet);
     closePhotoEditorBtn.addEventListener('click', closeEditorHandler);
     closePhotoEditorBtn.addEventListener('keydown', closeEditorHandler);
     uploadFile.removeEventListener('change', openEditor);
@@ -34,8 +37,8 @@ window.onload = function () {
 
   function closeEditor() {
     window.removeEventListener('keydown', globalCloseEditorHandler);
-    window.initializeFilters.removeFiltersListeners(filtersWrap);
-    window.createScale.removeScaleListeners(scaleControlWrap);
+    filters.removeFiltersListeners(filtersWrap);
+    scale.removeScaleListeners(scaleControlWrap);
     closePhotoEditorBtn.removeEventListener('click', closeEditorHandler);
     closePhotoEditorBtn.removeEventListener('keydown', closeEditorHandler);
     uploadFile.addEventListener('change', openEditor);

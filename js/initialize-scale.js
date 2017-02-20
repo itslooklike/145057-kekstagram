@@ -1,6 +1,6 @@
 'use strict';
 
-window.createScale = (function () {
+window.createScale = function () {
   var maxZoom = 100;
   var step = 25;
   var currentZoomValue = null;
@@ -47,4 +47,4 @@ window.createScale = (function () {
       elem.removeEventListener('click', changeZoomHandler);
     }
   };
-})();
+};
