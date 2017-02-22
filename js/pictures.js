@@ -1,6 +1,6 @@
 'use strict';
 
-window.picture = (function () {
+(function () {
   var url = 'https://intensive-javascript-server-myophkugvq.now.sh/kekstagram/data';
   var picArray = [];
   var picturesContainer = document.querySelector('.pictures');
@@ -10,14 +10,10 @@ window.picture = (function () {
     var sorted = [];
 
     while (sorted.length < 10) {
-      var element = window.utils.getRandomElement(picArray);
+      var randomPicture = window.utils.getRandomElement(picArray);
 
-      var flag = sorted.some(function (value) {
-        return value === element;
-      });
-
-      if (!flag) {
-        sorted.push(element);
+      if (sorted.indexOf(randomPicture) === -1) {
+        sorted.push(randomPicture);
       }
     }
 
@@ -26,8 +22,9 @@ window.picture = (function () {
 
   var sortPicsComments = function () {
     var sorted = picArray.slice(0);
-    sorted.sort(function (itemA, itemB) {
-      return itemB.comments.length - itemA.comments.length;
+
+    sorted.sort(function (picA, picB) {
+      return picB.comments.length - picA.comments.length;
     });
 
     return sorted;
@@ -38,16 +35,17 @@ window.picture = (function () {
     picturesContainer.appendChild(fragment);
   };
 
-  var imgGenerate = function (elem) {
-    var elementToClone = document.querySelector('#picture-template').content.querySelector('.picture');
+  var elementToClone = document.querySelector('#picture-template').content.querySelector('.picture');
+
+  var imgGenerate = function (picturesArray) {
     var fragment = document.createDocumentFragment();
 
-    elem.forEach(function (value) {
+    picturesArray.forEach(function (pic) {
       var newElement = elementToClone.cloneNode(true);
 
-      newElement.querySelector('img').src = value.url;
-      newElement.querySelector('.picture-comments').textContent = value.comments.length;
-      newElement.querySelector('.picture-likes').textContent = value.likes;
+      newElement.querySelector('img').src = pic.url;
+      newElement.querySelector('.picture-comments').textContent = pic.comments.length;
+      newElement.querySelector('.picture-likes').textContent = pic.likes;
       fragment.appendChild(newElement);
     });
 
