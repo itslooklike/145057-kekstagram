@@ -1,7 +1,6 @@
 'use strict';
 
 window.onload = function () {
-
   var scaleControlWrap = document.querySelector('.upload-resize-controls');
   var picture = document.querySelector('.filter-image-preview');
   var filtersWrap = document.querySelector('.upload-filter-controls');
