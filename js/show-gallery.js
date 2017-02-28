@@ -7,7 +7,7 @@ window.showGallery = (function () {
   var comments = document.querySelector('.comments-count');
   var likes = document.querySelector('.likes-count');
 
-  var fillContent = function (target) {
+  var contentFill = function (target) {
     img.src = target.querySelector('img').src;
     comments.textContent = target.querySelector('.picture-comments').textContent;
     likes.textContent = target.querySelector('.picture-likes').textContent;
@@ -15,22 +15,22 @@ window.showGallery = (function () {
     overlayClose.focus();
   };
 
-  var closeDialog = function () {
+  var dialogClose = function () {
     galleryOverlay.classList.add('invisible');
-    overlayClose.removeEventListener('click', closeDialog);
-    overlayClose.removeEventListener('keydown', closeDialog);
-    window.removeEventListener('keydown', globalCloseEsc);
+    overlayClose.removeEventListener('click', windowCloseHandler);
+    overlayClose.removeEventListener('keydown', windowCloseHandler);
+    window.removeEventListener('keydown', windowCloseEscHandler);
   };
 
-  var globalClose = window.utils.globalActivation.bind(window.utils.globalActivation, closeDialog);
-  var globalCloseEsc = window.utils.globalCloser.bind(window.utils.globalCloser, closeDialog);
+  var windowCloseHandler = window.utils.runCallbackIfActivate.bind(window.utils.runCallbackIfActivate, dialogClose);
+  var windowCloseEscHandler = window.utils.runCallbackIfDeactivate.bind(window.utils.runCallbackIfDeactivate, dialogClose);
 
   return {
     showGalleryInit: function (target) {
-      fillContent(target);
-      overlayClose.addEventListener('click', globalClose);
-      overlayClose.addEventListener('keydown', globalClose);
-      window.addEventListener('keydown', globalCloseEsc);
+      contentFill(target);
+      overlayClose.addEventListener('click', windowCloseHandler);
+      overlayClose.addEventListener('keydown', windowCloseHandler);
+      window.addEventListener('keydown', windowCloseEscHandler);
     }
   };
 })();

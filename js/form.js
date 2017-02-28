@@ -1,7 +1,6 @@
 'use strict';
 
-window.onload = function () {
-
+(function () {
   var scaleControlWrap = document.querySelector('.upload-resize-controls');
   var picture = document.querySelector('.filter-image-preview');
   var filtersWrap = document.querySelector('.upload-filter-controls');
@@ -11,49 +10,54 @@ window.onload = function () {
   var uploadFile = document.querySelector('#upload-file');
   var closePhotoEditorBtn = document.querySelector('.upload-form-cancel');
 
-  var pictureScaleSet = function (scale) {
-    picture.style.transform = 'scale(' + parseInt(scale, 10) / 100 + ')';
-  };
-
-  var applyFilter = function (oldFilter, newFilter) {
+  var filterApply = function (oldFilter, newFilter) {
     picture.classList.remove(oldFilter);
     picture.classList.add(newFilter);
   };
 
-  var scale = window.initializeScale(scaleControlWrap, pictureScaleSet);
-  var filters = window.initializeFilters(filtersWrap, applyFilter);
+  var INITIAL_SCALE = 100;
+  var SCALE_STEP = 25;
 
-  var globalClose = window.utils.globalCloser.bind(window.utils.globalCloser, closeEditor);
+  var pictureScaleSet = function (scale) {
+    picture.style.transform = 'scale(' + parseInt(scale, 10) / 100 + ')';
+  };
 
-  function openEditor() {
-    window.addEventListener('keydown', globalClose);
+  var scale = window.initializeScale(scaleControlWrap, SCALE_STEP, INITIAL_SCALE, pictureScaleSet);
+
+  var filters = window.initializeFilters(filtersWrap, filterApply);
+
+  var windowCloseHandler = window.utils.runCallbackIfDeactivate.bind(window.utils.runCallbackIfDeactivate, editorClose);
+
+  function editorOpenHandler() {
+    window.addEventListener('keydown', windowCloseHandler);
     filters.subscribe();
     scale.subscribe();
-    closePhotoEditorBtn.addEventListener('click', closeEditorHandler);
-    closePhotoEditorBtn.addEventListener('keydown', closeEditorHandler);
-    uploadFile.removeEventListener('change', openEditor);
+    closePhotoEditorBtn.addEventListener('click', editorCloseHandler);
+    closePhotoEditorBtn.addEventListener('keydown', editorCloseHandler);
+    uploadFile.removeEventListener('change', editorOpenHandler);
     editorWindow.classList.remove('invisible');
     uploadImageForm.classList.add('invisible');
+    uploadImageForm.attributes['aria-pressed'].value = 'true';
   }
 
-  function closeEditor() {
-    window.removeEventListener('keydown', globalClose);
+  function editorClose() {
+    window.removeEventListener('keydown', windowCloseHandler);
     filters.unsubscribe();
     scale.unsubscribe();
-    closePhotoEditorBtn.removeEventListener('click', closeEditorHandler);
-    closePhotoEditorBtn.removeEventListener('keydown', closeEditorHandler);
-    uploadFile.addEventListener('change', openEditor);
-
+    closePhotoEditorBtn.removeEventListener('click', editorCloseHandler);
+    closePhotoEditorBtn.removeEventListener('keydown', editorCloseHandler);
+    uploadFile.addEventListener('change', editorOpenHandler);
     editorWindow.classList.add('invisible');
     uploadImageForm.classList.remove('invisible');
+    uploadImageForm.attributes['aria-pressed'].value = 'false';
     uploadImageForm.reset();
   }
 
-  function closeEditorHandler(evt) {
+  function editorCloseHandler(evt) {
     if (window.utils.isActivationEvent(evt)) {
-      closeEditor();
+      editorClose();
     }
   }
 
-  closeEditor();
-};
+  editorClose();
+})();

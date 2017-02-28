@@ -1,19 +1,22 @@
 'use strict';
 
-window.load = function (url, onLoad) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url);
-  xhr.addEventListener('readystatechange', function (evt) {
-    if (evt.target.readyState === 4) {
+window.loadData = (function () {
+  var xhrTimeout = 60000;
+
+  return function (url, callback) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open('GET', url);
+    xhr.addEventListener('load', function (evt) {
       try {
-        if (typeof onLoad === 'function') {
-          onLoad(evt.target.response);
+        if (typeof callback === 'function') {
+          callback(evt.target.response);
         }
       } catch (err) {
         // error handler
       }
-    }
-  });
-  xhr.timeout = 60000;
-  xhr.send();
-};
+    });
+    xhr.timeout = xhrTimeout;
+    xhr.send();
+  };
+})();
