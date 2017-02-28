@@ -1,49 +1,43 @@
 'use strict';
 
 window.initializeScale = (function () {
-  var maxZoom = 100;
-  var step = 25;
+  var zoomDecrementBtn = 'upload-resize-controls-button-dec';
+  var zoomIncrementBtn = 'upload-resize-controls-button-inc';
 
   function removeListeners(elem, listener) {
     elem.removeEventListener('click', listener);
   }
 
-  function addListeners(elem, pictureScaleSet, listener) {
-    pictureScaleSet();
+  function addListeners(elem, callback, listener) {
+    callback();
     elem.addEventListener('click', listener);
   }
 
-  return function (elem, callback) {
+  return function (elem, scaleStep, scaleMax, callback) {
     var currentZoomValue = null;
+    var zoomInput = elem.querySelector('input');
 
-    function pictureScaleSet() {
-      currentZoomValue = currentZoomValue ? currentZoomValue : maxZoom;
-
-      if (typeof callback === 'function') {
-        callback(currentZoomValue);
-      }
-
-      elem.querySelector('input').value = currentZoomValue + '%';
-    }
-
-    function changeZoom(evt) {
+    function zoomChangeHandler(evt) {
       if (window.utils.isActivationEvent(evt)) {
-        var decBtn = 'upload-resize-controls-button-dec';
-        var incBtn = 'upload-resize-controls-button-inc';
-
-        if (evt.target.classList.contains(incBtn)) {
-          currentZoomValue = currentZoomValue + step > maxZoom ? maxZoom : currentZoomValue + step;
-        } else if (evt.target.classList.contains(decBtn)) {
-          currentZoomValue = currentZoomValue - step < step ? step : currentZoomValue - step;
+        if (evt.target.classList.contains(zoomIncrementBtn)) {
+          currentZoomValue = currentZoomValue + scaleStep > scaleMax ? scaleMax : currentZoomValue + scaleStep;
+        } else if (evt.target.classList.contains(zoomDecrementBtn)) {
+          currentZoomValue = currentZoomValue - scaleStep < scaleStep ? scaleStep : currentZoomValue - scaleStep;
         }
 
-        pictureScaleSet();
+        setPictureScaleValueHandler();
       }
+    }
+
+    function setPictureScaleValueHandler() {
+      currentZoomValue = currentZoomValue ? currentZoomValue : scaleMax;
+      zoomInput.value = currentZoomValue + '%';
+      callback(currentZoomValue);
     }
 
     return {
-      unsubscribe: removeListeners.bind(removeListeners, elem, changeZoom),
-      subscribe: addListeners.bind(addListeners, elem, pictureScaleSet, changeZoom)
+      unsubscribe: removeListeners.bind(removeListeners, elem, zoomChangeHandler),
+      subscribe: addListeners.bind(addListeners, elem, setPictureScaleValueHandler, zoomChangeHandler)
     };
   };
 })();

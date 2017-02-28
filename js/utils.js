@@ -18,21 +18,21 @@ window.utils = {
     return evt.keyCode === this.KEY_CODES.enter || evt.type === 'click';
   },
 
-  runIfCallback: function (cb) {
-    if (typeof cb === 'function') {
-      cb();
+  runIfCallback: function (callback) {
+    if (typeof callback === 'function') {
+      callback();
     }
   },
 
-  globalCloser: function (cb, evt) {
+  runCallbackIfDeactivate: function (callback, evt) {
     if (window.utils.isDeactivationEvent(evt)) {
-      window.utils.runIfCallback(cb);
+      window.utils.runIfCallback(callback);
     }
   },
 
-  globalActivation: function (cb, evt) {
+  runCallbackIfActivate: function (callback, evt) {
     if (window.utils.isActivationEvent(evt)) {
-      window.utils.runIfCallback(cb);
+      window.utils.runIfCallback(callback);
     }
   }
 };
