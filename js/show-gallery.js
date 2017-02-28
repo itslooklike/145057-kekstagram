@@ -9,7 +9,7 @@ window.showGallery = (function () {
 
   var HIDE_MARK = 'invisible';
 
-  var contentFill = function (target) {
+  var fillContent = function (target) {
     img.src = target.querySelector('img').src;
     comments.textContent = target.querySelector('.picture-comments').textContent;
     likes.textContent = target.querySelector('.picture-likes').textContent;
@@ -17,19 +17,19 @@ window.showGallery = (function () {
     overlayClose.focus();
   };
 
-  var dialogClose = function () {
+  var closeDialog = function () {
     galleryOverlay.classList.add(HIDE_MARK);
     overlayClose.removeEventListener('click', windowCloseHandler);
     overlayClose.removeEventListener('keydown', windowCloseHandler);
     window.removeEventListener('keydown', windowCloseEscHandler);
   };
 
-  var windowCloseHandler = window.utils.runCallbackIfActivate.bind(window.utils.runCallbackIfActivate, dialogClose);
-  var windowCloseEscHandler = window.utils.runCallbackIfDeactivate.bind(window.utils.runCallbackIfDeactivate, dialogClose);
+  var windowCloseHandler = window.utils.runCallbackIfActivate.bind(window.utils.runCallbackIfActivate, closeDialog);
+  var windowCloseEscHandler = window.utils.runCallbackIfDeactivate.bind(window.utils.runCallbackIfDeactivate, closeDialog);
 
   return {
     showGalleryInit: function (target) {
-      contentFill(target);
+      fillContent(target);
       overlayClose.addEventListener('click', windowCloseHandler);
       overlayClose.addEventListener('keydown', windowCloseHandler);
       window.addEventListener('keydown', windowCloseEscHandler);

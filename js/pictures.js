@@ -30,7 +30,7 @@
     return sorted;
   };
 
-  var picturesAppend = function (fragment) {
+  var appendPictures = function (fragment) {
     picturesContainer.innerHTML = '';
     picturesContainer.appendChild(fragment);
   };
@@ -49,7 +49,7 @@
       fragment.appendChild(newElement);
     });
 
-    picturesAppend(fragment);
+    appendPictures(fragment);
   };
 
   var picturesDataLoadHandler = function (data) {
