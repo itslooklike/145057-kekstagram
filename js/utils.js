@@ -1,9 +1,9 @@
 'use strict';
 
 window.utils = {
-  KEY_CODES: {
-    escape: 27,
-    enter: 13
+  keyCodes: {
+    ESCAPE: 27,
+    ENTER: 13
   },
 
   getRandomElement: function (arr) {
@@ -11,11 +11,11 @@ window.utils = {
   },
 
   isDeactivationEvent: function (evt) {
-    return evt.keyCode === this.KEY_CODES.escape;
+    return evt.keyCode === this.keyCodes.ESCAPE;
   },
 
   isActivationEvent: function (evt) {
-    return evt.keyCode === this.KEY_CODES.enter || evt.type === 'click';
+    return evt.keyCode === this.keyCodes.ENTER || evt.type === 'click';
   },
 
   runIfCallback: function (callback) {

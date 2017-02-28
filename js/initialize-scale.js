@@ -1,8 +1,8 @@
 'use strict';
 
 window.initializeScale = (function () {
-  var zoomDecrementBtn = 'upload-resize-controls-button-dec';
-  var zoomIncrementBtn = 'upload-resize-controls-button-inc';
+  var ZOOM_DECREMENT_BTN = 'upload-resize-controls-button-dec';
+  var ZOOM_INCREMENT_BTN = 'upload-resize-controls-button-inc';
 
   function removeListeners(elem, listener) {
     elem.removeEventListener('click', listener);
@@ -19,9 +19,9 @@ window.initializeScale = (function () {
 
     function zoomChangeHandler(evt) {
       if (window.utils.isActivationEvent(evt)) {
-        if (evt.target.classList.contains(zoomIncrementBtn)) {
+        if (evt.target.classList.contains(ZOOM_INCREMENT_BTN)) {
           currentZoomValue = currentZoomValue + scaleStep > scaleMax ? scaleMax : currentZoomValue + scaleStep;
-        } else if (evt.target.classList.contains(zoomDecrementBtn)) {
+        } else if (evt.target.classList.contains(ZOOM_DECREMENT_BTN)) {
           currentZoomValue = currentZoomValue - scaleStep < scaleStep ? scaleStep : currentZoomValue - scaleStep;
         }
 

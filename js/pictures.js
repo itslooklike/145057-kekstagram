@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var picturesDataUrl = 'https://intensive-javascript-server-myophkugvq.now.sh/kekstagram/data';
+  var PICTURES_DATA_URL = 'https://intensive-javascript-server-myophkugvq.now.sh/kekstagram/data';
   var picturesCollection = [];
   var picturesContainer = document.querySelector('.pictures');
   var filters = document.querySelector('.filters');
@@ -57,14 +57,14 @@
     filters.classList.remove('hidden');
   };
 
-  var pictureBox = 'picture';
+  var PICTURE_BOX = 'picture';
 
   var galleryOpenHandler = function (evt) {
     if (window.utils.isActivationEvent(evt)) {
       evt.preventDefault();
       var target = evt.target;
       while (target !== picturesContainer) {
-        if (target.classList.contains(pictureBox)) {
+        if (target.classList.contains(PICTURE_BOX)) {
           window.showGallery.showGalleryInit(target);
           return;
         }
@@ -73,26 +73,26 @@
     }
   };
 
-  var picturesByName = 'filter-new';
-  var picturesByDiscussed = 'filter-discussed';
-  var picturesByPopular = 'filter-popular';
-  var sortedPicturesAmount = 10;
+  var PICTURES_BY_NAME = 'filter-new';
+  var PICTURES_BY_DISCUSSED = 'filter-discussed';
+  var PICTURES_BY_POPULAR = 'filter-popular';
+  var SORTED_PICTURES_AMOUNT = 10;
 
   var pictureFilterHandler = function (evt) {
     switch (evt.target.id) {
-      case picturesByName:
-        generateImageFragment(sortRandomPictures(sortedPicturesAmount));
+      case PICTURES_BY_NAME:
+        generateImageFragment(sortRandomPictures(SORTED_PICTURES_AMOUNT));
         break;
-      case picturesByDiscussed:
+      case PICTURES_BY_DISCUSSED:
         generateImageFragment(sortPicturesByComments());
         break;
-      case picturesByPopular:
+      case PICTURES_BY_POPULAR:
         generateImageFragment(picturesCollection);
         break;
     }
   };
 
-  window.loadData(picturesDataUrl, picturesDataLoadHandler);
+  window.loadData(PICTURES_DATA_URL, picturesDataLoadHandler);
 
   filters.addEventListener('click', pictureFilterHandler);
   picturesContainer.addEventListener('click', galleryOpenHandler);

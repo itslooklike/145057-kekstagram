@@ -1,8 +1,8 @@
 'use strict';
 
 window.initializeFilters = (function () {
-  var filterBtn = 'upload-filter';
-  var filterPrefix = 'filter-';
+  var FILTER_BTN = 'upload-filter';
+  var FILTER_PREFIX = 'filter-';
 
   function removeListeners(elem, listener) {
     elem.removeEventListener('click', listener);
@@ -21,10 +21,10 @@ window.initializeFilters = (function () {
     function changeFilterHandler(evt) {
       var newFilter = null;
 
-      if (evt.target.name === filterBtn) {
+      if (evt.target.name === FILTER_BTN) {
         newFilter = evt.target.value;
         applyNewFilter(newFilter);
-      } else if (evt.keyCode === window.utils.KEY_CODES.enter) {
+      } else if (evt.keyCode === window.utils.keyCodes.ENTER) {
         newFilter = evt.target.control.value;
         evt.target.control.checked = true;
         applyNewFilter(newFilter);
@@ -33,7 +33,7 @@ window.initializeFilters = (function () {
 
     function applyNewFilter(newFilter) {
       if (typeof callback === 'function') {
-        callback(filterPrefix + currentFilter, filterPrefix + (currentFilter = newFilter));
+        callback(FILTER_PREFIX + currentFilter, FILTER_PREFIX + (currentFilter = newFilter));
       }
     }
 

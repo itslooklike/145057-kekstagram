@@ -7,16 +7,18 @@ window.showGallery = (function () {
   var comments = document.querySelector('.comments-count');
   var likes = document.querySelector('.likes-count');
 
+  var HIDE_MARK = 'invisible';
+
   var contentFill = function (target) {
     img.src = target.querySelector('img').src;
     comments.textContent = target.querySelector('.picture-comments').textContent;
     likes.textContent = target.querySelector('.picture-likes').textContent;
-    galleryOverlay.classList.remove('invisible');
+    galleryOverlay.classList.remove(HIDE_MARK);
     overlayClose.focus();
   };
 
   var dialogClose = function () {
-    galleryOverlay.classList.add('invisible');
+    galleryOverlay.classList.add(HIDE_MARK);
     overlayClose.removeEventListener('click', windowCloseHandler);
     overlayClose.removeEventListener('keydown', windowCloseHandler);
     window.removeEventListener('keydown', windowCloseEscHandler);

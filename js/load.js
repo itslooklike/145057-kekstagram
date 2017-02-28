@@ -1,7 +1,7 @@
 'use strict';
 
 window.loadData = (function () {
-  var xhrTimeout = 60000;
+  var XHR_TIMEOUT = 60000;
 
   return function (url, callback) {
     var xhr = new XMLHttpRequest();
@@ -16,7 +16,7 @@ window.loadData = (function () {
         // error handler
       }
     });
-    xhr.timeout = xhrTimeout;
+    xhr.timeout = XHR_TIMEOUT;
     xhr.send();
   };
 })();
