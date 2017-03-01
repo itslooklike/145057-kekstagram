@@ -36,8 +36,8 @@
     closePhotoEditorBtn.addEventListener('keydown', closeEditorHandler);
     uploadFile.removeEventListener('change', editorOpenHandler);
     editorWindow.classList.remove('invisible');
+    editorWindow.removeAttribute('aria-hidden');
     uploadImageForm.classList.add('invisible');
-    uploadImageForm.attributes['aria-pressed'].value = 'true';
   }
 
   function closeEditor() {
@@ -48,8 +48,8 @@
     closePhotoEditorBtn.removeEventListener('keydown', closeEditorHandler);
     uploadFile.addEventListener('change', editorOpenHandler);
     editorWindow.classList.add('invisible');
+    editorWindow.setAttribute('aria-hidden', 'true');
     uploadImageForm.classList.remove('invisible');
-    uploadImageForm.attributes['aria-pressed'].value = 'false';
     uploadImageForm.reset();
   }
 
